@@ -2,7 +2,7 @@
 using BookingBusiness.Interface;
 using BookingData;
 using BookingData.Models;
-using BookingDto.Models;
+using BookingDto.Models.User;
 using BookingHelper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

@@ -1,5 +1,5 @@
 ﻿using BookingData.Models;
-using BookingDto.Models;
+using BookingDto.Models.User;
 
 namespace BookingBusiness.Interface;
 public interface IUserService

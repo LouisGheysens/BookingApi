@@ -1,6 +1,6 @@
 ﻿using BookingBusiness.Interface;
 using BookingData.Models;
-using BookingDto.Models;
+using BookingDto.Models.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingApi.Controllers;

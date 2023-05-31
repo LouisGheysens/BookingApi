@@ -42,6 +42,8 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 
 builder.Services.AddDbContext<BookingDbContext>(options => options.UseSqlServer(AppRetriever.GetConnectionString()));
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IDriverService, DriverService>();
+builder.Services.AddScoped<ITaxiService, TaxiService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 var app = builder.Build();
