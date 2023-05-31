@@ -13,5 +13,5 @@ public class Driver: BaseModel
 
     public required string LicenseNumber { get; set; }
 
-    public int TaxiId { get; set; }
+    public required Taxi Taxi { get; set; }
 }
