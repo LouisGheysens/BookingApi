@@ -44,6 +44,7 @@ builder.Services.AddDbContext<BookingDbContext>(options => options.UseSqlServer(
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<ITaxiService, TaxiService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 var app = builder.Build();

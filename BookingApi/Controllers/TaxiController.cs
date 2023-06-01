@@ -21,6 +21,13 @@ public class TaxiController : ControllerBase
         return Ok(request);
     }
 
+    [HttpGet("GetAllTaxiWihBookings")]
+    public async Task<IActionResult> GetAllTaxisInlcudeBookings()
+    {
+        var request = await _taxiService.GetAllTaxisIncludeBookings();
+        return Ok(request);
+    }
+
 
     [HttpGet("{Id}")]
     public async Task<IActionResult> GetTaxiById(int Id)
@@ -50,8 +57,8 @@ public class TaxiController : ControllerBase
         return Ok(request);
     }
 
-    [HttpPut("Bookings/{Id}")]
-    public async Task<IActionResult> PutBookinsForTaxi([FromRoute] int Id, [FromBody] RequestBookingsForTaxiDto dto)
+    [HttpPut("AddBookingsToTaxi/{Id}")]
+    public async Task<IActionResult> PutBookinsForTaxi([FromRoute] int Id, [FromBody] BookingsForTaxiDto dto)
     {
         var request = await _taxiService.CreateBookingsForTaxi(Id, dto.bookings);
         return Ok(request);

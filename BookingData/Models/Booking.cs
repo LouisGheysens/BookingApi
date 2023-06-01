@@ -21,6 +21,8 @@ public class Booking: BaseModel
 
     public required Taxi Taxi { get; set; }
 
+    public DateTime Reservation { get; set; }
+
     public ICollection<Payment> Payments { get; set; }
 
 }

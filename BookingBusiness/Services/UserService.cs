@@ -3,13 +3,11 @@ using BookingBusiness.Interface;
 using BookingData;
 using BookingData.Models;
 using BookingDto.Models.User;
-using BookingHelper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace BookingBusiness.Services;
 public class UserService : IUserService
@@ -70,6 +68,7 @@ public class UserService : IUserService
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
         var user = _mapper.Map<User>(request);
+        user.CreationDate = DateTime.Now;
         SetUserHashedPassword(user, hashedPassword);
 
         _context.Users.Add(user);

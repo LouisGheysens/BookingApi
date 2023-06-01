@@ -4,6 +4,7 @@ using BookingData;
 using BookingData.Models;
 using BookingDto.Models.Taxi;
 using Microsoft.EntityFrameworkCore;
+using System.Xml;
 
 namespace BookingBusiness.Services;
 public class TaxiService : ITaxiService
@@ -19,6 +20,8 @@ public class TaxiService : ITaxiService
 
     public async Task<TaxiDto> CreateTaxi(TaxiDto dto)
     {
+        var driver = _context.Drivers.FirstOrDefaultAsync(x => x.Id == dto.driverId && !x.Deleted) ?? throw new Exception("Driver not found");
+
         var taxiRequest = _mapper.Map<Taxi>(dto);
 
         taxiRequest.CreationDate = DateTime.Now;    
@@ -52,9 +55,10 @@ public class TaxiService : ITaxiService
 
     public async Task<TaxiDto> UpdateTaxi(int id, TaxiDto dto)
     {
-        var taxi = _context.Taxi.FirstOrDefault(x => x.Id == id && !x.Deleted) ?? throw new Exception("Taxi not found"); ;
+        var taxi = _context.Taxi.FirstOrDefault(x => x.Id == id && !x.Deleted) ?? throw new Exception("Taxi not found");
+        var driver = _context.Drivers.FirstOrDefaultAsync(x => x.Id == dto.driverId && !x.Deleted) ?? throw new Exception("Driver not found");
 
-        _mapper.Map(taxi, dto);
+        _mapper.Map(dto, taxi);
 
         taxi.ModificationDate = DateTime.Now;
 
@@ -63,20 +67,37 @@ public class TaxiService : ITaxiService
         return dto;
     }
 
-    public async Task<RequestBookingsForTaxiDto> CreateBookingsForTaxi(int id, List<BookingDto.Models.Booking.BookingDto> bookings)
+    public async Task<BookingsForTaxiDto> CreateBookingsForTaxi(int id, List<BookingDto.Models.Booking.BookingDto> bookings)
     {
         var taxi = _context.Taxi.FirstOrDefault(x => x.Id == id && !x.Deleted) ?? throw new Exception("Taxi not found");
 
-        var taxiDto = _mapper.Map<RequestBookingsForTaxiDto>(taxi);
-
         foreach(var booking in bookings)
         {
-            taxiDto.bookings.Add(booking);
+            var user = _context.Users.FirstOrDefaultAsync(x => x.Id == booking.UserId && !x.Deleted);
+            if (user == null || string.IsNullOrEmpty(booking.UserId.ToString()))
+            {
+                throw new Exception("User not found");
+            }
+
+            if (taxi.Id != booking.TaxiId || string.IsNullOrEmpty(booking.TaxiId.ToString()))
+            {
+                throw new Exception("Taxi not found");
+            }
+
+            var newBooking = _mapper.Map<Booking>(booking);
+            _context.Bookings.Add(newBooking);
         }
 
         await _context.SaveChangesAsync();
-
+        var taxiDto = _mapper.Map<BookingsForTaxiDto>(taxi);
+        taxiDto.bookings = bookings;
         return taxiDto;
     }
 
+    public async Task<List<BookingsForTaxiDto>> GetAllTaxisIncludeBookings()
+    {
+        var taxiWithBookings = await _context.Taxi.Where(x => !x.Deleted).Include(x => x.Bookings).ToListAsync();
+
+        return _mapper.Map<List<BookingsForTaxiDto>>(taxiWithBookings);
+    }
 }
